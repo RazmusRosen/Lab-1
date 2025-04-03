@@ -1,0 +1,43 @@
+
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const url = process.env.MONGODB
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(url, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+export async function insert(dish) {
+  const {id, name, ingredients, preparationSteps, CookingTime, origin} = dish
+  try {
+    
+    const database = client.db('lab1')
+    const collection = database.collection('dish')
+    // Create a document to insert
+    const doc = {
+      id: id,
+      name: name,
+      ingredients: ingredients,
+      preparationSteps: preparationSteps,
+      CookingTime: CookingTime,
+      origin: origin
+    }
+    const result = await collection.insertOne(doc)
+    console.log(`A document was inserted with the _id: ${result.insertedId}`)
+    return result.insertedId
+    
+   
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+
