@@ -11,13 +11,13 @@ const port = process.env.PORT
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${port}`)
   })
-  
 
-mongoDB.insert({
-  id: 1,
-  name: 'Pasta',
-  ingredients: ['pasta', 'water', 'salt'],
-  preparationSteps: ['boil water', 'add pasta', 'cook for 10 minutes'],
-  CookingTime: 10,
-  origin: 'Italy'
+const router = express.Router()
+app.use('/api', router)
+  
+app.use(express.json())
+
+router.get('/dishes', async (req, res) => {
+    const dishes = await mongoDB.getAllDishes()
+    res.json(dishes)
 })

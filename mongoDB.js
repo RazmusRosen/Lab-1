@@ -21,8 +21,8 @@ export async function insert(dish) {
     
     const database = client.db('lab1')
     const collection = database.collection('dish')
-    // Create a document to insert
-    const doc = {
+    // Create a dish to insert
+    const dish = {
       id: id,
       name: name,
       ingredients: ingredients,
@@ -30,7 +30,7 @@ export async function insert(dish) {
       CookingTime: CookingTime,
       origin: origin
     }
-    const result = await collection.insertOne(doc)
+    const result = await collection.insertOne(dish)
     console.log(`A document was inserted with the _id: ${result.insertedId}`)
     return result.insertedId
     
@@ -41,3 +41,9 @@ export async function insert(dish) {
   }
 }
 
+export async function getAllDishes() {
+  const database = client.db('lab1')
+  const collection = database.collection('dish')
+  const dishes = await collection.find({}).toArray()
+  return dishes
+}
