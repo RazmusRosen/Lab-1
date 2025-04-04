@@ -45,3 +45,17 @@ export async function getAllDishes() {
   const dishes = await collection.find({}).toArray()
   return dishes
 }
+
+export async function updateDish(id, dish) {
+  const database = client.db('lab1')
+  const collection = database.collection('dish')
+  const result = await collection.updateOne({id: id}, {$set: dish})
+  return result
+}
+
+export async function getDishById(id) {
+  const database = client.db('lab1')
+  const collection = database.collection('dish')
+  const dish = await collection.findOne({id: parseInt(id)})
+  return dish
+}

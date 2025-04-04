@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
-import * as mongoDB from './mongoDB.js'
+import * as mongoDB from './database/mongoDB.js'
 
 dotenv.config()
 
@@ -32,3 +32,25 @@ app.get('/api/dishes', async (req, res) => {
     res.json(dishes)
 })
 
+app.get('/api/dishes/:id', async (req, res) => {
+    const dishId = req.params.id
+    try {
+      const dish = await mongoDB.getDishById(dishId)
+      if (!dish) {
+        return res.status(404).send('Dish not found')
+      }
+      res.json(dish)
+    }catch (error) {
+      res.status(500).send('Internal Server Error')
+    }
+})
+
+app.patch('/api/dishes/:id', async (req, res) => {
+    const dishId = req.params.id
+    try {
+        console.log(req.body)
+    } catch (error) {
+        console.error('Error updating dish:', error)
+        res.status(500).send('Internal Server Error')
+    }
+  })

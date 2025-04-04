@@ -1,3 +1,4 @@
+
 fetchDishes()
 
 async function fetchDishes() {
@@ -12,6 +13,26 @@ async function fetchDishes() {
         createDishCard(dish, dishId)
         dishId++
     })
+}
+
+function update(event) {
+    const input = event.target.parentElement.querySelector('input')
+    input.disabled = !input.disabled
+}
+
+async function apply(id, dish) {
+    console.log(id)
+    console.log("In the apply function")
+    //mongoDB.updateDish(id, dish)
+    const response = await fetch(`http://localhost:5000/api/dishes/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ingredients: [dish] })
+    })
+    console.log("This is the response from the script.js: "+response)
+    console.log("This is the dish from script.js: " + dish)
 }
 
 function createDishCard(dish, dishId) {
@@ -30,10 +51,22 @@ function createDishCard(dish, dishId) {
     ingredientsTable.appendChild(ingredients)
     for(const ingredient of dish.ingredients) {
         const ingredientTR = document.createElement('tr')
-        const ingredientName = document.createElement('td')
-        ingredientName.textContent = ingredient
-        ingredientTR.appendChild(ingredientName)
+        const ingredientInput = document.createElement('input')
+        ingredientInput.type = "text"
+        ingredientInput.value = ingredient
+        ingredientInput.disabled = true
+        ingredientTR.appendChild(ingredientInput)
+        
+        const updateButton = document.createElement('button')
+        updateButton.textContent = 'Update'
+        updateButton.addEventListener('click', update)
+        const applyButton = document.createElement('button')
+        applyButton.textContent = 'Apply'
+        applyButton.addEventListener('click', ()=>apply(dish.id, ingredientInput.value))
+
+        ingredientTR.appendChild(applyButton)
         ingredientsTable.appendChild(ingredientTR)
+        ingredientTR.appendChild(updateButton)
         fragment.appendChild(ingredientsTable)
     }
 
