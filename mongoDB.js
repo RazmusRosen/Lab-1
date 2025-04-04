@@ -33,11 +33,9 @@ export async function insert(dish) {
     const result = await collection.insertOne(dish)
     console.log(`A document was inserted with the _id: ${result.insertedId}`)
     return result.insertedId
-    
-   
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+  } catch (error) {
+    console.error('Error inserting dish:', error)
+    throw error
   }
 }
 
