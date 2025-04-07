@@ -2,6 +2,8 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import dotenv from 'dotenv'
 
+//kolla med mongoose
+
 dotenv.config()
 
 const url = process.env.MONGODB

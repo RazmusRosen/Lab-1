@@ -27,6 +27,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'index.html'))
 })
 
+app.post('/', async (req, res) => {
+    const dish = req.body
+    console.log(dish)
+})
+
 app.get('/api/dishes', async (req, res) => {
     const dishes = await mongoDB.getAllDishes()
     res.json(dishes)

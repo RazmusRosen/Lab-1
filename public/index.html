@@ -12,17 +12,21 @@
     </nav>
     <main>
         <h1>Dishes</h1>
-        <aside>
+        <aside id="add-dish-form">
             <h2>Add Dish</h2>
-            <form action="submit" method="post">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
 
-            </form>
         </aside>
         <div id="container">
             
         </div>
+
+        <!--
+        <form action="http://localhot:5000/api/dishes" method="post" id="dish_form">
+            <input type="text" id="name" name="name" required>
+            <input type="text" id="description" name="description" required>
+        </form>
+        <button id="submit_button">Submit</button>
+        -->
     </main>
 
     <script src="/scripts/script.js" type="module"></script>

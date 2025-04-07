@@ -16,8 +16,21 @@ article {
     min-width: 300px;
 }
 
+li {
+    display: flex;
+}
+
 th {
     text-align: left;
+    padding-right: 10px;
+}
+td, ul {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+input {
+    min-width: fit-content;
 }
 
 #container {
