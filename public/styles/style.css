@@ -33,6 +33,26 @@ input {
     min-width: fit-content;
 }
 
+#preparationSteps-wrapper {
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-left: 20px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
+aside {
+    justify-items: center;
+    margin-top: 20px;
+}
+
 #container {
     display: flex;
     align-items: center;
