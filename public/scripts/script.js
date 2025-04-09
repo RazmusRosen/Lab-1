@@ -18,8 +18,7 @@ async function fetchDishes() {
     })
 }
 let dish;
-function update(event) {
-    const input = event.target.parentElement.querySelector('input')
+function update(input) {
     input.disabled = !input.disabled
     dish = input
     //ändrat lite där nere också när jag kallade på denna function dubbelkolla sen om det funkar
@@ -39,8 +38,11 @@ async function apply(id, dish) {
         },
         body: JSON.stringify({ ingredients: [dish] })
     })
-    console.log("This is the response from the script.js: "+response)
-    console.log("This is the dish from script.js: " + dish)
+    if (!response.ok) {
+        throw new Error('Network response was not ok')
+    }
+    const responseData = await response.json()
+    console.log(responseData)
 }
 
 //kolla sen om man kan söka efter specifikt recept sen displaya bara det
@@ -144,7 +146,7 @@ function createDishCardTable(dish, dishId) {
     dishTR.appendChild(preparationSteps);
 
     const cookingTime = document.createElement('th');
-    cookingTime.textContent = 'Cooking Time';
+    cookingTime.textContent = 'Cooking Time (min)';
     dishTR.appendChild(cookingTime);
 
     const origin = document.createElement('th');
@@ -164,8 +166,21 @@ function createDishCardTable(dish, dishId) {
     dishTR2.appendChild(dishIdNum);
 
     const dishName2 = document.createElement('td');
-    dishName2.textContent = `${dish.name}`;
-    dishTR2.appendChild(dishName2);
+    const dishNameInput = document.createElement('input');
+    dishNameInput.type = "text";
+    dishNameInput.value = dish.name;
+    dishNameInput.disabled = true;
+    const updateButton = document.createElement('button');
+    updateButton.textContent = 'Update';
+    updateButton.addEventListener('click', () => update(dishNameInput));
+    const applyButton = document.createElement('button');
+    applyButton.textContent = 'Apply';
+    applyButton.addEventListener('click', async () => await apply(dish._id, dishNameInput.value));
+    dishName2.appendChild(dishNameInput);
+    dishName2.appendChild(updateButton);
+    dishName2.appendChild(applyButton); 
+    dishTR2.appendChild(dishName2);   
+
 
     const ingredientsCell = document.createElement('td');
     const ingredientsButton = document.createElement('button');
@@ -190,100 +205,87 @@ function createDishCardTable(dish, dishId) {
     dishTR2.appendChild(preparationStepsCell);
 
     const cookingTime2 = document.createElement('td');
-    cookingTime2.textContent = `${dish.cookingTime} minutes`;
+    const cookingTimeInput = document.createElement('input');
+    cookingTimeInput.type = "text";
+    cookingTimeInput.value = dish.cookingTime;
+    cookingTimeInput.disabled = true;
+    const updateButton2 = document.createElement('button');
+    updateButton2.textContent = 'Update';
+    updateButton2.addEventListener('click', () => update(cookingTimeInput));
+    const applyButton2 = document.createElement('button');
+    applyButton2.textContent = 'Apply';
+    applyButton2.addEventListener('click', () => apply(dish._id, cookingTimeInput.value));
+    cookingTime2.appendChild(cookingTimeInput);
+    cookingTime2.appendChild(updateButton2);
+    cookingTime2.appendChild(applyButton2);
     dishTR2.appendChild(cookingTime2);
 
     const origin2 = document.createElement('td');
-    origin2.textContent = `${dish.origin}`;
+    const originInput = document.createElement('input');
+    originInput.type = "text";
+    originInput.value = dish.origin;
+    originInput.disabled = true;
+    const updateButton3 = document.createElement('button');
+    updateButton3.textContent = 'Update';
+    updateButton3.addEventListener('click', () => update(originInput));
+    const applyButton3 = document.createElement('button');
+    applyButton3.textContent = 'Apply';
+    applyButton3.addEventListener('click', () => apply(dish._id, originInput));
+    origin2.appendChild(originInput);
+    origin2.appendChild(updateButton3);
+    origin2.appendChild(applyButton3);
     dishTR2.appendChild(origin2);
 
     const spiceLevel2 = document.createElement('td');
-    spiceLevel2.textContent = `${dish.spiceLevel}`;
+    const spiceLevelInput = document.createElement('input');
+    spiceLevelInput.type = "text";
+    spiceLevelInput.value = dish.spiceLevel;
+    spiceLevelInput.disabled = true;
+    const updateButton4 = document.createElement('button');
+    updateButton4.textContent = 'Update';
+    updateButton4.addEventListener('click', () => update(spiceLevelInput));
+    const applyButton4 = document.createElement('button');
+    applyButton4.textContent = 'Apply';
+    applyButton4.addEventListener('click', () => apply(dish._id, spiceLevelInput.value));
+    spiceLevel2.appendChild(spiceLevelInput);
+    spiceLevel2.appendChild(updateButton4);
+    spiceLevel2.appendChild(applyButton4);
     dishTR2.appendChild(spiceLevel2);
+
+    const deleteDishButton = document.createElement('button');
+    deleteDishButton.textContent = 'Delete Dish';
+    deleteDishButton.addEventListener('click', async () => {
+        await deleteDish(dish._id);
+        dishContainer.removeChild(dishTable);
+    });
+   
+    const deleteDishCell = document.createElement('td');
+    deleteDishCell.appendChild(deleteDishButton);
+    dishTR2.appendChild(deleteDishCell);
 
     dishTable.appendChild(dishTR2);
 
     dishContainer.appendChild(dishTable);
+}
 
-    /*
-    const dishTable = document.createElement("table")
-    const dishContainer = document.getElementById('container')
-    const dishIdNum = document.createElement('th')
-    dishIdNum.textContent = "Dish ID"
-    const dishName = document.createElement('th')
-    dishName.textContent = "Dish Name"
-    const ingredients = document.createElement('th')
-    ingredients.textContent = 'Ingredients'
-    const preparationSteps = document.createElement('th')
-    preparationSteps.textContent = 'Preparation Steps'
-    const cookingTime = document.createElement('th')
-    cookingTime.textContent = 'Cooking Time'
-    const origin = document.createElement('th')
-    origin.textContent = 'Origin'
-    const spiceLevel = document.createElement('th')
-    spiceLevel.textContent = 'Spice Level'
-
-    const dishTR = document.createElement('tr')
-    dishTR.appendChild(dishIdNum)
-
-    dishTR.appendChild(dishName)
-    dishTR.appendChild(ingredients)
-    dishTR.appendChild(preparationSteps)
-    dishTR.appendChild(cookingTime)
-    dishTR.appendChild(origin)
-    dishTR.appendChild(spiceLevel)
-    dishTable.appendChild(dishTR)
-
-    const dishTR2 = document.createElement('tr')
-    const dishIdNum2 = document.createElement('td')
-    dishIdNum2.textContent = `${dishId}`
-    const dishName2 = document.createElement('td')
-    dishName2.textContent = `${dish.name}`
-    const ingredients2 = document.createElement('td')
-    const ingredientsButton = document.createElement('button')
-    ingredientsButton.textContent = "Show Ingredients"
-    const ingredientsTable = createIngredientsTable(dish.ingredients)
-    ingredientsButton.addEventListener('click', () => {
-        ingredientsTable.style.display = ingredientsTable.style.display === 'none' ? 'block' : 'none'
+async function deleteDish(id) {
+    const response = await fetch(`http://localhost:5000/api/dishes/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id })
     })
-    const preparationStepsTable = createPreparationStepsTable(dish.preparationSteps)
-    const preparationStepsButton = document.createElement('button')
-    preparationStepsButton.textContent = "Show Preparation Steps"
-    preparationStepsButton.addEventListener('click', () => {
-        preparationStepsTable.style.display = preparationStepsTable.style.display === 'none' ? 'block' : 'none'
-    })
-    const cookingTime2 = document.createElement('td')
-    cookingTime2.textContent = `${dish.cookingTime}`
-    const origin2 = document.createElement('td')
-    origin2.textContent = `${dish.origin}`
-    const spiceLevel2 = document.createElement('td')
-    spiceLevel2.textContent = `${dish.spiceLevel}`
-
-    dishTR2.appendChild(dishIdNum2)
-    dishTR2.appendChild(dishName2)
-    dishTR2.appendChild(ingredientsTable)
-    dishTR2.appendChild(ingredientsButton)
-    dishTR2.appendChild(preparationStepsTable)
-    dishTR2.appendChild(preparationStepsButton)
-    dishTR2.appendChild(cookingTime2)
-    dishTR2.appendChild(origin2)
-    dishTR2.appendChild(spiceLevel2)
-    dishTable.appendChild(dishTR2)
-    const updateButton = document.createElement('button')
-    updateButton.textContent = 'Update'
-    updateButton.addEventListener('click', ()=>update(ingredients2))
-    const applyButton = document.createElement('button')
-    applyButton.textContent = 'Apply'
-    applyButton.addEventListener('click', ()=>apply(dish._id, ingredients2))
-    dishTable.appendChild(updateButton)
-    dishTable.appendChild(applyButton)
-    
-    dishContainer.appendChild(dishTable)
-    */
+    if (!response.ok) {
+        throw new Error('Network response was not ok')
+    }
+    const responseData = await response.json()
+    console.log(responseData)
 }
 
 function createPreparationStepsTable(preparationSteps) {
     const preparationStepsTable = document.createElement('table')
+    preparationStepsTable.classList.add('steps-table')
     preparationStepsTable.style.display = 'none'
     for (const preparation of preparationSteps) {
         const preparationTR = document.createElement('tr')
@@ -308,6 +310,7 @@ function createPreparationStepsTable(preparationSteps) {
 
 function createIngredientsTable(ingredients) {
     const ingredientsTable = document.createElement('table')
+    ingredientsTable.classList.add('steps-table')
     ingredientsTable.style.display = 'none'
     for (const ingredient of ingredients) {
         const ingredientTR = document.createElement('tr')
