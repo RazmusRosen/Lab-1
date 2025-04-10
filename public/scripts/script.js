@@ -27,16 +27,16 @@ function update(input) {
 }
 
 //får nog ändra mitt id till _id för vad händer när jag tar bort sen lägger till då kommer det vara 1pasta send kanske 4 hamburager osv
-async function apply(id, dish) {
+async function apply(id, field, updatedValue) {
     console.log(id)
     console.log("In the apply function")
-    //mongoDB.updateDish(id, dish)
+    const updatedDish = {[field]: updatedValue}
     const response = await fetch(`http://localhost:5000/api/dishes/${id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ingredients: [dish] })
+        body: JSON.stringify(updatedDish)
     })
     if (!response.ok) {
         throw new Error('Network response was not ok')
@@ -90,13 +90,14 @@ function createDishCardTable(dish, dishId) {
     const dishNameInput = document.createElement('input');
     dishNameInput.type = "text";
     dishNameInput.value = dish.name;
+    dishNameInput.id = "name"
     dishNameInput.disabled = true;
     const updateButton = document.createElement('button');
     updateButton.textContent = 'Update';
     updateButton.addEventListener('click', () => update(dishNameInput));
     const applyButton = document.createElement('button');
     applyButton.textContent = 'Apply';
-    applyButton.addEventListener('click', async () => await apply(dish._id, dishNameInput.value));
+    applyButton.addEventListener('click', async () => await apply(dish._id, dishNameInput.id, dishNameInput.value));
     dishName2.appendChild(dishNameInput);
     dishName2.appendChild(updateButton);
     dishName2.appendChild(applyButton); 
@@ -290,11 +291,14 @@ function createFormForDish() {
         event.preventDefault()
         const br = document.createElement('br')
         ingredientsInputWrapper.appendChild(br)
+        console.log("add button clicked ingredients")
         addInput(ingredientsInputWrapper, ingredientsInput)
     })
+
+    ingredientsInputWrapper.appendChild(ingredientsInput)
+    ingredientsInputWrapper.appendChild(addIngredients)
     form.appendChild(ingredientsLabel)
-    form.appendChild(ingredientsInput)
-    form.appendChild(addIngredients)
+    form.appendChild(ingredientsInputWrapper)
     form.appendChild(document.createElement('br'))
     form.appendChild(document.createElement('br'))
 
@@ -315,6 +319,7 @@ function createFormForDish() {
         event.preventDefault()
         const br = document.createElement('br')
         div.appendChild(br)
+        console.log("add button clicked preparation steps")
         addInput(div, preparationStepsInput)
     })
     div.appendChild(preparationStepsInput)
@@ -370,12 +375,11 @@ function createFormForDish() {
 }
 
 function addInput(wrapper, input) {
-    const inputWrapper = document.getElementById(wrapper.id)
     const newInput = document.createElement('input')
     newInput.type = 'text'
     newInput.name = input.name
     newInput.id = input.id
-    inputWrapper.appendChild(newInput)
+    wrapper.appendChild(newInput)
 
 }
 
@@ -385,27 +389,49 @@ function submit(event) {
     const form = document.getElementById('dish_form')
     event.preventDefault()
     const preparationStepsArray = []
+    const ingredientsArray = []
     const formData = new FormData(form)
     const name = formData.get('dish_name')
-    const ingredients = formData.get('ingredients')
     const preparationSteps = formData.getAll('preparation_steps')
+    const ingredients = formData.getAll('ingredients')
     for (const step of preparationSteps) {
         if(step === "") {
             continue
         }
         preparationStepsArray.push(step)
-        console.log(step)
+    }
+    for (const ingredient of ingredients) {
+        if(ingredient === "") {
+            continue
+        }
+        ingredientsArray.push(ingredient)
     }
     const cookingTime = formData.get('cooking_time')
     const origin = formData.get('origin')
     const spiceLevel = formData.get('spice_level')
     const dish = {
         name: name,
-        ingredients: ingredients,
+        ingredients: ingredientsArray,
         preparationSteps: preparationStepsArray,
         cookingTime: cookingTime,
         origin: origin,
         spiceLevel: spiceLevel
     }
     console.log(dish)
+    postDish(dish)
+}
+
+async function postDish(dish) {
+    const response = await fetch('http://localhost:5000/api/dishes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dish)
+    })
+    if (!response.ok) {
+        throw new Error('Network response was not ok')
+    }
+    const responseData = await response.json()
+    return responseData
 }

@@ -1,5 +1,5 @@
 
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import dotenv from 'dotenv'
 
 //kolla med mongoose
@@ -51,13 +51,22 @@ export async function getAllDishes() {
 export async function updateDish(id, dish) {
   const database = client.db('lab1')
   const collection = database.collection('dish')
-  const result = await collection.updateOne({id: id}, {$set: dish})
+  try {
+    console.log('ID:', id)
+    console.log('ID type:', typeof id)
+  const result = await collection.updateOne({_id: new ObjectId(id)}, {$set: dish})
   return result
+  }catch (error) {
+    console.error('Error updating dish:', error)
+    throw error
+  }
 }
 
 export async function getDishById(id) {
   const database = client.db('lab1')
   const collection = database.collection('dish')
-  const dish = await collection.findOne({id: parseInt(id)})
+  console.log('ID:', id)
+  console.log('ID type:', typeof id)
+  const dish = await collection.findOne({_id: new ObjectId(id)}) //tried without the 'new' but it didn't work
   return dish
 }

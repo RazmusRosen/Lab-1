@@ -28,10 +28,11 @@ app.get('/', (req, res) => {
 })
 
 app.post('/api/dishes', async (req, res) => {
-    const {dish} = req.body
+    console.log('POST request received')
+    const dish = req.body
     console.log(dish)
     const result = await mongoDB.insert(dish)
-    result.status(201).json({data: 'Dish inserted:', dish})
+    res.status(201).json({data: 'Dish inserted:', dish})
     console.log(dish)
 })
 
@@ -53,10 +54,14 @@ app.get('/api/dishes/:id', async (req, res) => {
     }
 })
 
-app.patch('/api/dishes/:id', async (req, res) => {
+app.put('/api/dishes/:id', async (req, res) => {
     const dishId = req.params.id
     try {
-        console.log(req.body)
+      const result = await mongoDB.updateDish(dishId, req.body)
+      if(result.modifiedCount === 0) {
+        return res.status(404).send('Dish not found')
+      }
+      res.status(200).json({data: 'Dish updated:', dishId})
     } catch (error) {
         console.error('Error updating dish:', error)
         res.status(500).send('Internal Server Error')
