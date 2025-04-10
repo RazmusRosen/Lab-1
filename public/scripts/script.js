@@ -45,85 +45,6 @@ async function apply(id, dish) {
     console.log(responseData)
 }
 
-//kolla sen om man kan söka efter specifikt recept sen displaya bara det
-//ALLT SOM EN TABLE SEN EN KNAPP MED STEPS OCH INGREDIENTS nu när det är fler SÅ DISPLAY:NONE SEN NÄR MAN TRYCKER SÅ DISPLAY:BLOCK SOM MED BLOG
-/*
-function createDishCard(dish, dishId) {
-    const dishContainer = document.getElementById('container')
-    const dishCard = document.createElement("article")
-
-    const fragment = document.createDocumentFragment()
-
-    const dishName = document.createElement('h1')
-    dishName.textContent = `${dishId}. ${dish.name}`
-    fragment.appendChild(dishName)
-
-    const ingredientsTable = document.createElement('table')
-    const ingredients = document.createElement('th')
-    ingredients.textContent = 'Ingredients'
-    ingredientsTable.appendChild(ingredients)
-    for(const ingredient of dish.ingredients) {
-        const ingredientTR = document.createElement('tr')
-        const ingredientInput = document.createElement('input')
-        ingredientInput.type = "text"
-        ingredientInput.value = ingredient
-        ingredientInput.disabled = true
-        ingredientTR.appendChild(ingredientInput)
-        
-        const updateButton = document.createElement('button')
-        updateButton.textContent = 'Update'
-        updateButton.addEventListener('click', ()=>update(ingredientInput.value))
-        const applyButton = document.createElement('button')
-        applyButton.textContent = 'Apply'
-        applyButton.addEventListener('click', ()=>apply(dish._id, ingredientInput.value))
-
-        ingredientTR.appendChild(applyButton)
-        ingredientsTable.appendChild(ingredientTR)
-        ingredientTR.appendChild(updateButton)
-        fragment.appendChild(ingredientsTable)
-    }
-
-    const preparationStepsTable = document.createElement('table')
-    const preparationSteps = document.createElement('th')
-    preparationSteps.textContent = 'Preparation Steps'
-    preparationStepsTable.appendChild(preparationSteps)
-    fragment.appendChild(preparationStepsTable)
-
-    let stepCounter = 1
-    for(const step of dish.preparationSteps) {
-        const preparationStepTR = document.createElement('tr')
-        const preparationStepName = document.createElement('td')
-        preparationStepName.textContent = `${stepCounter}. ${step}`
-        preparationStepTR.appendChild(preparationStepName)
-        preparationStepsTable.appendChild(preparationStepTR)
-        fragment.appendChild(preparationStepsTable)
-    }
-
-    const cookingTimeH2 = document.createElement('h2')
-    cookingTimeH2.textContent = 'Cooking Time'
-    const cookingTimeP = document.createElement('p')
-    cookingTimeP.textContent = `${dish.cookingTime} minutes`
-    fragment.appendChild(cookingTimeH2)
-    fragment.appendChild(cookingTimeP)
-
-    const originH2 = document.createElement('h2')
-    originH2.textContent = 'Origin'
-    const originP = document.createElement('p')
-    originP.textContent = dish.origin
-    fragment.appendChild(originH2)
-    fragment.appendChild(originP)
-
-    const spiceLevel = document.createElement('h2')
-    spiceLevel.textContent = 'Spice Level'
-    const spiceLevelP = document.createElement('p')
-    spiceLevelP.textContent = dish.spiceLevel
-    fragment.appendChild(spiceLevel)
-    fragment.appendChild(spiceLevelP)
-
-    dishCard.appendChild(fragment)
-    dishContainer.appendChild(dishCard)
-}
-    */
 function createDishCardTable(dish, dishId) {
     const dishContainer = document.getElementById('container');
     const dishTable = document.createElement("table");
@@ -335,71 +256,156 @@ function createIngredientsTable(ingredients) {
 
 function createFormForDish() {
     const form = document.createElement('form')
-    /*
-    form.id = 'dish_form'
-    form.method = 'POST'
-    form.action = '/'
-    form.addEventListener('submit', (event) => {
+    form.id = "dish_form"
+    form.method = "POST"
+    form.action = "/api/dishes"
+
+    const dishName = document.createElement('label')
+    dishName.textContent = "Dish Name"
+    dishName.setAttribute('for', 'dish_name')
+    const dishNameInput = document.createElement('input')
+    dishNameInput.type = "text"
+    dishNameInput.id = "dish_name"
+    dishNameInput.name = "dish_name"
+    dishNameInput.required = true
+    form.appendChild(dishName)
+    form.appendChild(dishNameInput)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+
+    const ingredientsLabel = document.createElement('label')
+    ingredientsLabel.textContent = "Ingredients"
+    ingredientsLabel.setAttribute('for', 'ingredients')
+    const ingredientsInputWrapper = document.createElement('div')
+    ingredientsInputWrapper.id = "ingredients-wrapper"
+    const ingredientsInput = document.createElement('input')
+    ingredientsInput.type = "text"
+    ingredientsInput.id = "ingredients"
+    ingredientsInput.name = "ingredients"
+    const addIngredients = document.createElement('button')
+    addIngredients.textContent = "+"
+    addIngredients.type = "button"
+    addIngredients.id = "add_ingredients_button"
+    addIngredients.addEventListener('click', (event) => {
         event.preventDefault()
-        const formData = new FormData(form)
-        const dish = {
-            id: formData.get('id'),
-            name: formData.get('name'),
-            ingredients: formData.get('ingredients').split(','),
-            preparationSteps: formData.get('preparationSteps').split(','),
-            cookingTime: formData.get('cookingTime'),
-            origin: formData.get('origin'),
-            spiceLevel: formData.get('spiceLevel')
-        }
-        console.log(dish)
-    } */
+        const br = document.createElement('br')
+        ingredientsInputWrapper.appendChild(br)
+        addInput(ingredientsInputWrapper, ingredientsInput)
+    })
+    form.appendChild(ingredientsLabel)
+    form.appendChild(ingredientsInput)
+    form.appendChild(addIngredients)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
 
-    form.innerHTML = `
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br><br>
-        <label for="ingredients">Ingredients:</label>
-        <input type="text" id="ingredients" name="ingredients"><br><br>
-        <label for="preparationSteps">Preparation Steps:</label>
-
-        <div id="preparationSteps-wrapper">
-        <input type="text" id="preparationSteps" name="preparationSteps">
-        <button id="add_button">+</button><br>
-        </div>
-
-        <label for="cookingTime">Cooking Time:</label>
-        <input type="text" id="cookingTime" name="cookingTime"><br><br>
-        <label for="origin">Origin:</label>
-        <input type="text" id="origin" name="origin"><br><br>
-        <label for="spiceLevel">Spice Level:</label>
-        <input type="text" id="spiceLevel" name="spiceLevel"><br><br>
-        <input type="submit" id="submit_button" value="Submit">
-    `
-    const formContainer = document.getElementById('add-dish-form')
-    formContainer.appendChild(form)
-
-    const addButton = document.getElementById('add_button')
+    const preparationStepsLabel = document.createElement('label')
+    preparationStepsLabel.textContent = "Preparation Steps"
+    preparationStepsLabel.setAttribute('for', 'preparation_steps')
+    const div = document.createElement('div')
+    div.id = "preparationSteps-wrapper"
+    const preparationStepsInput = document.createElement('input')
+    preparationStepsInput.type = "text"
+    preparationStepsInput.id = "preparation_steps"
+    preparationStepsInput.name = "preparation_steps"
+    const addButton = document.createElement('button')
+    addButton.textContent = "+"
+    addButton.type = "button"
+    addButton.id = "add_button"
     addButton.addEventListener('click', (event) => {
         event.preventDefault()
-        addInput(form)
+        const br = document.createElement('br')
+        div.appendChild(br)
+        addInput(div, preparationStepsInput)
     })
+    div.appendChild(preparationStepsInput)
+    div.appendChild(addButton)
+    form.appendChild(preparationStepsLabel)
+    form.appendChild(div)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+    const cookingTimeLabel = document.createElement('label')
+    cookingTimeLabel.textContent = "Cooking Time (min)"
+    cookingTimeLabel.setAttribute('for', 'cooking_time')
+    const cookingTimeInput = document.createElement('input')
+    cookingTimeInput.type = "text"
+    cookingTimeInput.id = "cooking_time"
+    cookingTimeInput.name = "cooking_time"
+    cookingTimeInput.required = true
+    form.appendChild(cookingTimeLabel)
+    form.appendChild(cookingTimeInput)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+    const originLabel = document.createElement('label')
+    originLabel.textContent = "Origin"
+    originLabel.setAttribute('for', 'origin')
+    const originInput = document.createElement('input')
+    originInput.type = "text"
+    originInput.id = "origin"
+    originInput.name = "origin"
+    originInput.required = true
+    form.appendChild(originLabel)
+    form.appendChild(originInput)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+    const spiceLevelLabel = document.createElement('label')
+    spiceLevelLabel.textContent = "Spice Level"
+    spiceLevelLabel.setAttribute('for', 'spice_level')
+    const spiceLevelInput = document.createElement('input')
+    spiceLevelInput.type = "text"
+    spiceLevelInput.id = "spice_level"
+    spiceLevelInput.name = "spice_level"
+    const submitButton = document.createElement('button')
+    submitButton.textContent = "Submit"
+    submitButton.type = "submit"
+    submitButton.id = "submit_button"
+    form.appendChild(spiceLevelLabel)
+    form.appendChild(spiceLevelInput)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+    form.appendChild(submitButton)
+    form.appendChild(document.createElement('br'))
+    form.appendChild(document.createElement('br'))
+    const formContainer = document.getElementById('add-dish-form')
+    formContainer.appendChild(form)
 }
 
-function addInput(form) {
-    const wrapper = document.getElementById('preparationSteps-wrapper')
+function addInput(wrapper, input) {
+    const inputWrapper = document.getElementById(wrapper.id)
     const newInput = document.createElement('input')
     newInput.type = 'text'
-    newInput.name = 'preparationSteps'
-    newInput.placeholder = 'Preparation Steps'
-    wrapper.appendChild(newInput)
-    wrapper.appendChild(document.createElement("br")) // So it adds under the previous input
+    newInput.name = input.name
+    newInput.id = input.id
+    inputWrapper.appendChild(newInput)
+
 }
 
 document.getElementById("submit_button").addEventListener("click", submit)
 
 function submit(event) {
     const form = document.getElementById('dish_form')
-    const id = form.elements['description'].value
-    const name = form.elements['name'].value
-    console.log(name)
-    console.log(id)
+    event.preventDefault()
+    const preparationStepsArray = []
+    const formData = new FormData(form)
+    const name = formData.get('dish_name')
+    const ingredients = formData.get('ingredients')
+    const preparationSteps = formData.getAll('preparation_steps')
+    for (const step of preparationSteps) {
+        if(step === "") {
+            continue
+        }
+        preparationStepsArray.push(step)
+        console.log(step)
+    }
+    const cookingTime = formData.get('cooking_time')
+    const origin = formData.get('origin')
+    const spiceLevel = formData.get('spice_level')
+    const dish = {
+        name: name,
+        ingredients: ingredients,
+        preparationSteps: preparationStepsArray,
+        cookingTime: cookingTime,
+        origin: origin,
+        spiceLevel: spiceLevel
+    }
+    console.log(dish)
 }

@@ -27,8 +27,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'index.html'))
 })
 
-app.post('/', async (req, res) => {
-    const dish = req.body
+app.post('/api/dishes', async (req, res) => {
+    const {dish} = req.body
+    console.log(dish)
+    const result = await mongoDB.insert(dish)
+    result.status(201).json({data: 'Dish inserted:', dish})
     console.log(dish)
 })
 
