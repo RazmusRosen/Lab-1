@@ -7,26 +7,18 @@ h1 {
     text-align: center;
 }
 
-article {
-    margin-top: 30px;
-    margin-bottom: 30px;;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #f0f0f0;
-    min-width: 300px;
-}
-
 li {
     display: flex;
 }
 
 th {
     text-align: left;
-    padding-right: 10px;
+}
+#dishId {
+    text-align: center;
 }
 td, ul {
-    margin-right: 10px;
-    margin-left: 10px;
+
     width: 100px;
 }
 .steps-table {
@@ -58,12 +50,14 @@ aside {
 }
 
 table {
-    width: 80vw;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 30px;
 }
-
-#container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+td {
+    border: 1px solid black;
+}
+th, td {
+padding-top: 10px;
+padding-bottom: 20px;
 }

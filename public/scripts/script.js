@@ -9,6 +9,13 @@ async function fetchDishes() {
     }
     const dishes = await response.json()
     console.log(dishes)
+    /*
+        const searchDish = document.createElement("input")
+    searchDish.type = "text"
+    searchDish.addEventListener("input", (event) => {
+        
+    })
+    */
 
     let dishId = 1
     dishes.forEach(dish => {
@@ -63,42 +70,12 @@ async function apply(id, field, updatedValue, index=null, className=null) {
 
 function createDishCardTable(dish, dishId) {
     const dishContainer = document.getElementById('container');
-    const dishTable = document.createElement("table");
-
-    const dishTR = document.createElement('tr');
-    const dishIdHead = document.createElement('th');
-    dishIdHead.textContent = "Dish ID";
-    dishTR.appendChild(dishIdHead);
-
-    const dishName = document.createElement('th');
-    dishName.textContent = "Dish Name";
-    dishTR.appendChild(dishName);
-
-    const ingredients = document.createElement('th');
-    ingredients.textContent = 'Ingredients';
-    dishTR.appendChild(ingredients);
-
-    const preparationSteps = document.createElement('th');
-    preparationSteps.textContent = 'Preparation Steps';
-    dishTR.appendChild(preparationSteps);
-
-    const cookingTime = document.createElement('th');
-    cookingTime.textContent = 'Cooking Time (min)';
-    dishTR.appendChild(cookingTime);
-
-    const origin = document.createElement('th');
-    origin.textContent = 'Origin';
-    dishTR.appendChild(origin);
-
-    const spiceLevel = document.createElement('th');
-    spiceLevel.textContent = 'Spice Level';
-    dishTR.appendChild(spiceLevel);
-
-    dishTable.appendChild(dishTR);
+    const dishTable = document.getElementById('dish-table')
 
     const dishTR2 = document.createElement('tr');
 
     const dishIdNum = document.createElement('td');
+    dishIdNum.id = "dishId"
     dishIdNum.textContent = `${dishId}`;
     dishTR2.appendChild(dishIdNum);
 
