@@ -27,7 +27,23 @@ function update(input) {
 }
 
 //får nog ändra mitt id till _id för vad händer när jag tar bort sen lägger till då kommer det vara 1pasta send kanske 4 hamburager osv
-async function apply(id, field, updatedValue) {
+async function apply(id, field, updatedValue, index=null, className=null) {
+    console.log("In the apply function")
+    console.log(field)
+    console.log(field.includes("ingredients"))
+    if(field.includes("ingredients") === true || field === "preparationSteps") {
+    const container = []
+        const inputArray = document.querySelectorAll(`.${className}`)
+        console.log("THIS IS THE ARRAY AFTER QUERYSELECTOR ALL: "+ inputArray[index].value)
+        inputArray[index].value = updatedValue
+        for (const input of inputArray) {
+            if(input.value === "") {
+                continue
+            }
+            container.push(input.value)
+        }
+        updatedValue = container
+    }
     console.log(id)
     console.log("In the apply function")
     const updatedDish = {[field]: updatedValue}
@@ -107,7 +123,7 @@ function createDishCardTable(dish, dishId) {
     const ingredientsCell = document.createElement('td');
     const ingredientsButton = document.createElement('button');
     ingredientsButton.textContent = "Show Ingredients";
-    const ingredientsTable = createIngredientsTable(dish.ingredients);
+    const ingredientsTable = createIngredientsTable(dish._id,dish.ingredients);
     ingredientsButton.addEventListener('click', () => {
         ingredientsTable.style.display = ingredientsTable.style.display === 'none' ? 'block' : 'none';
     });
@@ -230,26 +246,32 @@ function createPreparationStepsTable(preparationSteps) {
 }
 
 
-function createIngredientsTable(ingredients) {
+function createIngredientsTable(dish_id, ingredients) {
     const ingredientsTable = document.createElement('table')
     ingredientsTable.classList.add('steps-table')
     ingredientsTable.style.display = 'none'
+
+    let index = 0
     for (const ingredient of ingredients) {
         const ingredientTR = document.createElement('tr')
         const ingredientInput = document.createElement('input')
         ingredientInput.type = "text"
         ingredientInput.value = ingredient
         ingredientInput.disabled = true
+        ingredientInput.className = `Dish-${dish_id}`
+        ingredientInput.id = index
         const updateButton = document.createElement('button')
         updateButton.textContent = 'Update'
-        updateButton.addEventListener('click', () => update(ingredientInput.value))
+        updateButton.addEventListener('click', () => update(ingredientInput))
         const applyButton = document.createElement('button')
         applyButton.textContent = 'Apply'
-        applyButton.addEventListener('click', () => apply(dish._id, ingredientInput.value))
+        applyButton.addEventListener('click', async () => await apply(dish_id, "ingredients", ingredientInput.value, ingredientInput.id, ingredientInput.className))
         ingredientTR.appendChild(ingredientInput)
         ingredientTR.appendChild(updateButton)
         ingredientTR.appendChild(applyButton)
         ingredientsTable.appendChild(ingredientTR)
+        index++
+
     }
 
     return ingredientsTable
