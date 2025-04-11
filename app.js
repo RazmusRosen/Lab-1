@@ -67,3 +67,17 @@ app.put('/api/dishes/:id', async (req, res) => {
         res.status(500).send('Internal Server Error')
     }
   })
+
+app.delete('/api/dishes/:id', async (req, res) => {
+    const dishId = req.params.id
+    try {
+      const result = await mongoDB.deleteDish(dishId)
+      if (result.deletedCount === 0) {
+        return res.status(404).send('Dish not found')
+      }
+      res.status(200).json({data: 'Dish deleted:', dishId})
+    } catch (error) {
+        console.error('Error deleting dish:', error)
+        res.status(500).send('Internal Server Error')
+    }
+})

@@ -70,3 +70,10 @@ export async function getDishById(id) {
   const dish = await collection.findOne({_id: new ObjectId(id)}) //tried without the 'new' but it didn't work
   return dish
 }
+
+export async function deleteDish(id) {
+  const database = client.db('lab1')
+  const collection = database.collection('dish')
+  const result = await collection.deleteOne({_id: new ObjectId(id)})
+  return result
+}

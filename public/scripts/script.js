@@ -147,12 +147,13 @@ function createDishCardTable(dish, dishId) {
     cookingTimeInput.type = "text";
     cookingTimeInput.value = dish.cookingTime;
     cookingTimeInput.disabled = true;
+    cookingTimeInput.id = "cookingTime"
     const updateButton2 = document.createElement('button');
     updateButton2.textContent = 'Update';
     updateButton2.addEventListener('click', () => update(cookingTimeInput));
     const applyButton2 = document.createElement('button');
     applyButton2.textContent = 'Apply';
-    applyButton2.addEventListener('click', () => apply(dish._id, cookingTimeInput.value));
+    applyButton2.addEventListener('click', async () => await apply(dish._id, cookingTimeInput.id, cookingTimeInput.value));
     cookingTime2.appendChild(cookingTimeInput);
     cookingTime2.appendChild(updateButton2);
     cookingTime2.appendChild(applyButton2);
@@ -163,12 +164,13 @@ function createDishCardTable(dish, dishId) {
     originInput.type = "text";
     originInput.value = dish.origin;
     originInput.disabled = true;
+    originInput.id = "origin"
     const updateButton3 = document.createElement('button');
     updateButton3.textContent = 'Update';
     updateButton3.addEventListener('click', () => update(originInput));
     const applyButton3 = document.createElement('button');
     applyButton3.textContent = 'Apply';
-    applyButton3.addEventListener('click', () => apply(dish._id, originInput));
+    applyButton3.addEventListener('click', async () => await apply(dish._id, originInput.id, originInput.value));
     origin2.appendChild(originInput);
     origin2.appendChild(updateButton3);
     origin2.appendChild(applyButton3);
@@ -179,12 +181,13 @@ function createDishCardTable(dish, dishId) {
     spiceLevelInput.type = "text";
     spiceLevelInput.value = dish.spiceLevel;
     spiceLevelInput.disabled = true;
+    spiceLevelInput.id = "spiceLevel"
     const updateButton4 = document.createElement('button');
     updateButton4.textContent = 'Update';
     updateButton4.addEventListener('click', () => update(spiceLevelInput));
     const applyButton4 = document.createElement('button');
     applyButton4.textContent = 'Apply';
-    applyButton4.addEventListener('click', () => apply(dish._id, spiceLevelInput.value));
+    applyButton4.addEventListener('click', async () => await apply(dish._id, spiceLevelInput.id, spiceLevelInput.value));
     spiceLevel2.appendChild(spiceLevelInput);
     spiceLevel2.appendChild(updateButton4);
     spiceLevel2.appendChild(applyButton4);
@@ -208,12 +211,9 @@ function createDishCardTable(dish, dishId) {
 
 async function deleteDish(id) {
     const response = await fetch(`http://localhost:5000/api/dishes/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id })
+        method: 'DELETE'
     })
+
     if (!response.ok) {
         throw new Error('Network response was not ok')
     }
