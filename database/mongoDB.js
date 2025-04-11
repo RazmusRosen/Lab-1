@@ -18,19 +18,19 @@ const client = new MongoClient(url, {
 });
 
 export async function insert(dish) {
-  const {id, name, ingredients, preparationSteps, CookingTime, origin} = dish
+  const {name, ingredients, preparationSteps, cookingTime, origin, spiceLevel} = dish
   try {
     
     const database = client.db('lab1')
     const collection = database.collection('dish')
     // Create a dish to insert
     const dish = {
-      id: id,
       name: name,
       ingredients: ingredients,
       preparationSteps: preparationSteps,
-      CookingTime: CookingTime,
-      origin: origin
+      cookingTime: cookingTime,
+      origin: origin,
+      spiceLevel: spiceLevel
     }
     const result = await collection.insertOne(dish)
     console.log(`A document was inserted with the _id: ${result.insertedId}`)
