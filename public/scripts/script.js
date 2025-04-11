@@ -31,7 +31,7 @@ async function apply(id, field, updatedValue, index=null, className=null) {
     console.log("In the apply function")
     console.log(field)
     console.log(field.includes("ingredients"))
-    if(field.includes("ingredients") === true || field === "preparationSteps") {
+    if(field.includes("ingredients") === true || field.includes("preparationSteps") === true) {
     const container = []
         const inputArray = document.querySelectorAll(`.${className}`)
         console.log("THIS IS THE ARRAY AFTER QUERYSELECTOR ALL: "+ inputArray[index].value)
@@ -134,7 +134,7 @@ function createDishCardTable(dish, dishId) {
     const preparationStepsCell = document.createElement('td');
     const preparationStepsButton = document.createElement('button');
     preparationStepsButton.textContent = "Show Preparation Steps";
-    const preparationStepsTable = createPreparationStepsTable(dish.preparationSteps);
+    const preparationStepsTable = createPreparationStepsTable(dish._id, dish.preparationSteps);
     preparationStepsButton.addEventListener('click', () => {
         preparationStepsTable.style.display = preparationStepsTable.style.display === 'none' ? 'block' : 'none';
     });
@@ -221,26 +221,31 @@ async function deleteDish(id) {
     console.log(responseData)
 }
 
-function createPreparationStepsTable(preparationSteps) {
+function createPreparationStepsTable(dish_id, preparationSteps) {
     const preparationStepsTable = document.createElement('table')
     preparationStepsTable.classList.add('steps-table')
     preparationStepsTable.style.display = 'none'
+
+    let index = 0
     for (const preparation of preparationSteps) {
         const preparationTR = document.createElement('tr')
         const preparationInput = document.createElement('input')
         preparationInput.type = "text"
         preparationInput.value = preparation
         preparationInput.disabled = true
+        preparationInput.className = `Prep-${dish_id}`
+        preparationInput.id = index
         const updateButton = document.createElement('button')
         updateButton.textContent = 'Update'
-        updateButton.addEventListener('click', () => update(preparationInput.value))
+        updateButton.addEventListener('click', () => update(preparationInput))
         const applyButton = document.createElement('button')
         applyButton.textContent = 'Apply'
-        applyButton.addEventListener('click', () => apply(dish._id, preparationInput.value))
+        applyButton.addEventListener('click', async () => await apply(dish_id, "preparationSteps",preparationInput.value, preparationInput.id, preparationInput.className))
         preparationTR.appendChild(preparationInput)
         preparationTR.appendChild(updateButton)
         preparationTR.appendChild(applyButton)
         preparationStepsTable.appendChild(preparationTR)
+        index++
     }
     return preparationStepsTable
 }
@@ -258,7 +263,7 @@ function createIngredientsTable(dish_id, ingredients) {
         ingredientInput.type = "text"
         ingredientInput.value = ingredient
         ingredientInput.disabled = true
-        ingredientInput.className = `Dish-${dish_id}`
+        ingredientInput.className = `Ingredient-${dish_id}`
         ingredientInput.id = index
         const updateButton = document.createElement('button')
         updateButton.textContent = 'Update'
@@ -271,9 +276,7 @@ function createIngredientsTable(dish_id, ingredients) {
         ingredientTR.appendChild(applyButton)
         ingredientsTable.appendChild(ingredientTR)
         index++
-
     }
-
     return ingredientsTable
 }
 
