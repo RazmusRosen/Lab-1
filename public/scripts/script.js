@@ -21,12 +21,13 @@ function update(input) {
 
 async function apply(id, field, updatedValue, index=null, className=null) {
     console.log("In the apply function")
-    console.log(field)
-    console.log(field.includes("ingredients"))
+    /*
+    Just checking if the field is ingredients or preparationSteps, if it is, then we need to get the value of the input field and push it into an array.
+    We also need to check if the input field is empty, if it is, we need to skip it and not push it into the array.
+    */
     if(field.includes("ingredients") === true || field.includes("preparationSteps") === true) {
     const container = []
         const inputArray = document.querySelectorAll(`.${className}`)
-        console.log("THIS IS THE ARRAY AFTER QUERYSELECTOR ALL: "+ inputArray[index].value)
         inputArray[index].value = updatedValue
         for (const input of inputArray) {
             if(input.value === "") {
@@ -53,6 +54,9 @@ async function apply(id, field, updatedValue, index=null, className=null) {
     console.log(responseData)
 }
 
+/*
+This is for the search bar, it will fetch the dish by name and display it in the table.
+*/
 const searchDish = document.getElementById('search_dish')
 const searchDishButton = document.getElementById('search_button')
 searchDishButton.addEventListener('click', async (event) => {
@@ -60,6 +64,10 @@ searchDishButton.addEventListener('click', async (event) => {
     await displayDishByName(dishName)
 })
 
+/*
+This function will fetch the dish by name and display it in the table.
+It will also clear the table before displaying the new dishes that contains that name.
+*/
 async function displayDishByName(dishName) {
     const dishTable = document.getElementById('dish-table')
     dishTable.innerHTML = "" //Clear the table
@@ -181,8 +189,7 @@ function createDishCardTable(dish, dishId) {
     const deleteDishButton = document.createElement('button');
     deleteDishButton.textContent = 'Delete Dish';
     deleteDishButton.addEventListener('click', async () => {
-        await deleteDish(dish._id);
-        dishContainer.removeChild(dishTable);
+        await deleteDish(dish, dishTable, dishTR2);
     });
    
     const deleteDishCell = document.createElement('td');
@@ -194,7 +201,24 @@ function createDishCardTable(dish, dishId) {
     dishContainer.appendChild(dishTable);
 }
 
-async function deleteDish(id) {
+async function deleteDish(dish, dishTable, dishTR2) {
+    const confirmationWindow = document.getElementById('confirmation-window')
+    confirmationWindow.style.display = 'block'
+    const dishName = document.getElementById('delete-message')
+    dishName.textContent = `Are you sure you want to delete ${dish.name}?`
+    const confirmButton = document.getElementById('confirm-button')
+    const cancelButton = document.getElementById('cancel-button')
+    cancelButton.addEventListener('click', () => {
+        confirmationWindow.style.display = 'none'
+    })
+    confirmButton.addEventListener('click', async () => {
+        await confirmedDeleteDish(dish._id)
+        dishTable.removeChild(dishTR2);
+        confirmationWindow.style.display = "none" 
+    })
+}
+
+async function confirmedDeleteDish(id) {
     const response = await fetch(`http://localhost:5000/api/dishes/${id}`, {
         method: 'DELETE'
     })
@@ -429,6 +453,8 @@ function submit(event) {
     }
     console.log(dish)
     postDish(dish)
+    form.reset()
+    fetchDishes()
 }
 
 async function postDish(dish) {

@@ -29,6 +29,23 @@ input {
     min-width: fit-content;
 }
 
+#confirmation-window {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 500px;
+    width: 30%;
+    height: 50%;
+    background-color: bisque;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+}
+#confirm-button, #cancel-button {
+    padding: 20px;
+    cursor: pointer;
+}
+
 #preparationSteps-wrapper {
     margin-bottom: 10px;
 }
