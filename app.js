@@ -41,6 +41,31 @@ app.get('/api/dishes', async (req, res) => {
     res.json(dishes)
 })
 
+
+app.get("/api/dishes/search", async (req, res) => {
+  const dishname = ""
+  try {
+      const dish = await mongoDB.getDishByName(dishname)
+      res.json(dish)
+
+  } catch (error) {
+      console.error('Error fetching dish by name:', error)
+      res.status(500).send('Internal Server Error')
+  }
+})
+
+app.get("/api/dishes/search/:dishname", async (req, res) => {
+  const dishname = req.params.dishname
+  try {
+      const dish = await mongoDB.getDishByName(dishname)
+      res.json(dish)
+
+  } catch (error) {
+      console.error('Error fetching dish by name:', error)
+      res.status(500).send('Internal Server Error')
+  }
+})
+
 app.get('/api/dishes/:id', async (req, res) => {
     const dishId = req.params.id
     try {

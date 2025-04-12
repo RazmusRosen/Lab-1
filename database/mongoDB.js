@@ -44,7 +44,7 @@ export async function insert(dish) {
 export async function getAllDishes() {
   const database = client.db('lab1')
   const collection = database.collection('dish')
-  const dishes = await collection.find({}).toArray()
+  const dishes = await collection.find().toArray()
   return dishes
 }
 
@@ -62,9 +62,24 @@ export async function updateDish(id, dish) {
   }
 }
 
+export async function getDishByName(name) {
+  const database = client.db('lab1')
+  const collection = database.collection('dish')
+  console.log("in mongoDB.js getDishByName")
+  console.log('Name:', name)
+  if (name === '') {
+    const dish = await collection.find().toArray()
+    return dish
+  }
+  const dish = await collection.find({ name:{$regex: name}}).toArray()
+  console.log('Dish:', dish)
+  return dish
+}
+
 export async function getDishById(id) {
   const database = client.db('lab1')
   const collection = database.collection('dish')
+  console.log("in mongoDB.js getDishById")
   console.log('ID:', id)
   console.log('ID type:', typeof id)
   const dish = await collection.findOne({_id: new ObjectId(id)}) //tried without the 'new' but it didn't work

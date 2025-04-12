@@ -8,32 +8,17 @@ async function fetchDishes() {
         throw new Error('Network response was not ok')
     }
     const dishes = await response.json()
-    console.log(dishes)
-    /*
-        const searchDish = document.createElement("input")
-    searchDish.type = "text"
-    searchDish.addEventListener("input", (event) => {
-        
-    })
-    */
 
     let dishId = 1
     dishes.forEach(dish => {
-        //createDishCard(dish, dishId)
         createDishCardTable(dish, dishId)
         dishId++
     })
 }
-let dish;
 function update(input) {
     input.disabled = !input.disabled
-    dish = input
-    //ändrat lite där nere också när jag kallade på denna function dubbelkolla sen om det funkar
-
-    //något med en global variabel kanske så när jag trycker update så ta infon som finns i inputfältet så jag vet tex update pasta spara det sen när jag trycker apply så vet jag att det var pasta some får det nya värdet när apply trycks.
 }
 
-//får nog ändra mitt id till _id för vad händer när jag tar bort sen lägger till då kommer det vara 1pasta send kanske 4 hamburager osv
 async function apply(id, field, updatedValue, index=null, className=null) {
     console.log("In the apply function")
     console.log(field)
@@ -66,6 +51,29 @@ async function apply(id, field, updatedValue, index=null, className=null) {
     }
     const responseData = await response.json()
     console.log(responseData)
+}
+
+const searchDish = document.getElementById('search_dish')
+const searchDishButton = document.getElementById('search_button')
+searchDishButton.addEventListener('click', async (event) => {
+    const dishName = searchDish.value
+    await displayDishByName(dishName)
+})
+
+async function displayDishByName(dishName) {
+    const dishTable = document.getElementById('dish-table')
+    dishTable.innerHTML = "" //Clear the table
+    fetch(`http://localhost:5000/api/dishes/search/${dishName}`)
+    .then(response => response.json())
+    .then(data => {
+        let dishId = 1
+        data.forEach(dish => {
+            createDishCardTable(dish, dishId)
+            dishId++
+        })
+    }).catch(error => {
+        console.error('Error fetching dish by name:', error)
+    })
 }
 
 function createDishCardTable(dish, dishId) {
