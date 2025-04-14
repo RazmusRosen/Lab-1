@@ -80,7 +80,7 @@ export async function getDishById(id) {
   console.log("in mongoDB.js getDishById")
   console.log('ID:', id)
   console.log('ID type:', typeof id)
-  const dish = await collection.findOne({_id: new ObjectId(id)}) //tried without the 'new' but it didn't work
+  const dish = await collection.findOne({_id: new ObjectId(id)})
   return dish
 }
 
