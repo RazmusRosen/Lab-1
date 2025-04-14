@@ -369,6 +369,8 @@ function createFormForDish() {
     cookingTimeInput.type = "text"
     cookingTimeInput.id = "cooking_time"
     cookingTimeInput.name = "cooking_time"
+    cookingTimeInput.pattern = "[0-9]+"
+    cookingTimeInput.title = "Please enter a valid number"
     cookingTimeInput.required = true
     form.appendChild(cookingTimeLabel)
     form.appendChild(cookingTimeInput)
@@ -422,6 +424,12 @@ document.getElementById("submit_button").addEventListener("click", submit)
 function submit(event) {
     const form = document.getElementById('dish_form')
     event.preventDefault()
+
+    if(!form.checkValidity()) {
+        form.reportValidity()
+        return
+    }
+
     const preparationStepsArray = []
     const ingredientsArray = []
     const formData = new FormData(form)
